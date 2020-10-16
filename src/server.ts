@@ -11,6 +11,8 @@ import bodyParser from "body-parser";
 const clientWantsJson = (request: express.Request): boolean => request.get("accept") === "application/json";
 
 const jsonParser = bodyParser.json();
+const formParser = bodyParser.urlencoded({ extended: true });
+
 
 export function makeApp(db: Db): core.Express {
   const app = express();
@@ -27,6 +29,9 @@ export function makeApp(db: Db): core.Express {
   const gameModel = new GameModel(db.collection<Game>("games"));
 
   app.get("/", (_request, response) => response.render("pages/home"));
+
+  //code du 15/10
+  app.get("/platforms/new", formParser, platformsController.show(platformModel));
 
   app.get("/platforms", platformsController.index(platformModel));
   app.get("/platforms/:slug", platformsController.show(platformModel));
